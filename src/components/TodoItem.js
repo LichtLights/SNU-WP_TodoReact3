@@ -23,6 +23,13 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
         {todo.text}
       </span>
 
+      <span
+        className={styles.todoText}
+        style={{ textDecoration: todo.completed ? "line-through" : "none" }}
+      >
+        {todo.username}
+      </span>
+
       <span className={styles.todoDatetime}>
         {todo.datetime.substring(0, 10)}
       </span>

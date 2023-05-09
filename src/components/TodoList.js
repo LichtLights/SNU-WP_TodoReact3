@@ -39,13 +39,24 @@ const TodoList = () => {
     // const q = query(todoCollection);
     // const q = query(collection(db, "todos"), where("user", "==", user.uid));
     // const q = query(todoCollection, orderBy("datetime", "asc"));
+
     if (!data?.user?.name) return;
 
-    const q = query(
-      todoCollection,
-      where("userId", "==", data?.user?.id),
-      orderBy("datetime", "asc")
-    );
+    var q;
+    if (data.user.role === "admin") {
+      q = query(
+        todoCollection,
+        orderBy("datetime", "asc")
+      );
+    }
+    else {
+      q = query(
+        todoCollection,
+        where("userId", "==", data?.user?.id),
+        orderBy("datetime", "asc")
+      );
+    }
+
 
     // Firestore 에서 할 일 목록을 조회합니다.
     const results = await getDocs(q);
@@ -85,12 +96,13 @@ const TodoList = () => {
       text: input,
       completed: false,
       datetime: datetime,
+      username: data?.user?.name,
     });
 
     // id 값을 Firestore 에 저장한 값으로 지정합니다.
     setTodos([
       ...todos,
-      { id: docRef.id, text: input, datetime: datetime, completed: false },
+      { id: docRef.id, text: input, datetime: datetime, completed: false, username: data.user.name },
     ]);
     setInput("");
   };
@@ -147,7 +159,7 @@ const TodoList = () => {
           Sign out
         </button>
       </div>
-      
+
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
       <input
         type="text"
